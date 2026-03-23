@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PREÇO3D</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f3f0;
+  --white: #ffffff;
+  --border: #e2e0db;
+  --border2: #d0cec8;
+  --text: #1a1917;
+  --sub: #6b6760;
+  --muted: #a09d98;
+  --accent: #e85d2f;
+  --accent-light: #fdf1ec;
+  --accent-border: #f5c4b0;
+  --blue: #2563eb;
+  --blue-light: #eff4ff;
+  --blue-border: #bfcffd;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --green-border: #bbf7d0;
+  --yellow: #d97706;
+  --yellow-light: #fffbeb;
+  --sans: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 36px 20px 72px;
+}
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(232,93,47,.3);
+}
+
+.logo-text h1 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: -.5px;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.logo-text p {
+  font-size: .75rem;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.version {
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--accent);
+  background: var(--accent-light);
+  border: 1px solid var(--accent-border);
+  padding: 3px 9px;
+  border-radius: 99px;
+}
+
+/* ── STEP SYSTEM ── */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: visible;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: var(--radius);
+}
+
+.card.open .card-header {
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-header:hover .card-title { color: var(--accent); }
+
+.step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: .7rem;
+  font-weight: 500;
+  color: var(--sub);
+  flex-shrink: 0;
+  transition: all .2s;
+}
+
+.card.open .step-num,
+.card.done .step-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.card-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+.card-title {
+  font-weight: 600;
+  font-size: .95rem;
+  color: var(--text);
+  transition: color .15s;
+  flex: 1;
+}
+
+.card-sub {
+  font-size: .75rem;
+  color: var(--muted);
+}
+
+.card-preview {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--accent);
+  background: var(--accent-light);
+  border: 1px solid var(--accent-border);
+  padding: 2px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.chevron {
+  color: var(--muted);
+  font-size: .75rem;
+  transition: transform .2s;
+  margin-left: 2px;
+}
+
+.card:not(.open) .chevron { transform: rotate(-90deg); }
+.card:not(.open) .card-body { display: none; }
+
+.card-body { padding: 18px; }
+
+/* ── AUTO BADGE ── */
+.auto-pill {
+  font-size: .65rem;
+  font-family: var(--mono);
+  color: var(--blue);
+  background: var(--blue-light);
+  border: 1px solid var(--blue-border);
+  padding: 2px 7px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+/* ── PRINTER GRID ── */
+.brand-block { margin-bottom: 16px; }
+.brand-block:last-child { margin-bottom: 0; }
+.brand-name {
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.printer-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.pchip {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  cursor: pointer;
+  background: var(--bg);
+  transition: all .15s;
+}
+
+.pchip:hover { border-color: var(--blue-border); background: var(--blue-light); }
+
+.pchip.active {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+
+.pchip-name { font-weight: 600; font-size: .82rem; color: var(--text); }
+.pchip-info { font-size: .68rem; color: var(--sub); margin-top: 1px; font-family: var(--mono); }
+.pchip.active .pchip-info { color: var(--blue); }
+
+.autofill-bar {
+  display: none;
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--blue-light);
+  border: 1px solid var(--blue-border);
+  border-radius: var(--radius-sm);
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.autofill-bar.show { display: flex; animation: fadeUp .25s ease; }
+
+.af-item { display: flex; flex-direction: column; gap: 1px; }
+.af-label { font-size: .65rem; color: var(--blue); font-family: var(--mono); text-transform: uppercase; letter-spacing: 1px; }
+.af-value { font-size: .88rem; font-weight: 600; color: var(--blue); }
+.af-note { font-size: .7rem; color: var(--sub); margin-left: auto; }
+.af-edit { font-size: .7rem; color: var(--accent); background: none; border: none; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; padding: 0; }
+
+/* ── CATEGORY CHIPS ── */
+.cat-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.cchip {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  cursor: pointer;
+  background: var(--bg);
+  transition: all .15s;
+}
+
+.cchip:hover { border-color: var(--blue-border); background: var(--blue-light); }
+.cchip.active { border-color: var(--blue); background: var(--blue-light); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+
+.cchip-emoji { font-size: 1.2rem; margin-bottom: 5px; display: block; }
+.cchip-name { font-weight: 600; font-size: .8rem; color: var(--text); }
+.cchip-range { font-family: var(--mono); font-size: .68rem; color: var(--green); margin-top: 2px; }
+.cchip-ex { font-size: .68rem; color: var(--sub); margin-top: 2px; line-height: 1.4; }
+
+.sug-box {
+  display: none;
+  padding: 14px;
+  background: var(--blue-light);
+  border: 1px solid var(--blue-border);
+  border-radius: var(--radius-sm);
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sug-box.show { display: flex; animation: fadeUp .25s ease; }
+
+.sug-info { flex: 1; min-width: 160px; }
+.sug-tag { font-size: .67rem; font-family: var(--mono); color: var(--blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.sug-text { font-size: .85rem; color: var(--text); line-height: 1.5; }
+.sug-text strong { color: var(--blue); }
+.sug-note { font-size: .72rem; color: var(--sub); margin-top: 3px; }
+
+.sug-btns { display: flex; gap: 7px; flex-wrap: wrap; }
+
+.sbtn {
+  font-family: var(--mono);
+  font-size: .68rem;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1.5px solid;
+  transition: all .15s;
+  font-weight: 500;
+}
+
+.sbtn.low  { color: var(--sub); border-color: var(--border2); background: white; }
+.sbtn.low:hover { border-color: var(--accent); color: var(--accent); }
+.sbtn.mid  { color: var(--blue); border-color: var(--blue-border); background: white; }
+.sbtn.mid:hover { background: var(--blue-light); }
+.sbtn.high { color: var(--green); border-color: var(--green-border); background: white; }
+.sbtn.high:hover { background: var(--green-light); }
+
+/* ── FORM FIELDS ── */
+.fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.fgrid.three { grid-template-columns: 1fr 1fr 1fr; }
+.fgrid.single { grid-template-columns: 1fr; }
+
+@media (max-width: 540px) {
+  .fgrid, .fgrid.three { grid-template-columns: 1fr; }
+}
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+
+.field-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field label {
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.field .sub-label {
+  font-size: .7rem;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrap input {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: .9rem;
+  padding: 9px 36px 9px 11px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  -moz-appearance: textfield;
+}
+
+.input-wrap input::-webkit-outer-spin-button,
+.input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.input-wrap input:focus {
+  border-color: var(--accent);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(232,93,47,.1);
+}
+
+.input-wrap input.auto-val {
+  color: var(--blue);
+  background: var(--blue-light);
+  border-color: var(--blue-border);
+}
+
+.input-wrap input.auto-val:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+
+.input-unit {
+  position: absolute;
+  right: 10px;
+  font-size: .7rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  pointer-events: none;
+}
+
+.field-hint {
+  font-size: .7rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ── TOOLTIP ── */
+.tip-btn {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border2);
+  background: white;
+  color: var(--muted);
+  font-size: .6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: all .15s;
+}
+
+.tip-btn:hover, .tip-btn.open { border-color: var(--blue); color: var(--blue); }
+
+.tip-popup {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 999;
+  width: 240px;
+  background: var(--text);
+  color: white;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  animation: fadeUp .15s ease;
+}
+
+.tip-btn.open .tip-popup { display: block; }
+.tip-popup.flip { left: auto; right: 0; }
+
+.tip-popup p { font-size: .76rem; line-height: 1.6; }
+.tip-popup .tip-ex {
+  display: block;
+  margin-top: 8px;
+  padding: 7px 10px;
+  background: rgba(255,255,255,.1);
+  border-radius: 5px;
+  font-family: var(--mono);
+  font-size: .68rem;
+  line-height: 1.6;
+  color: #c8d8ff;
+}
+.tip-popup .tip-warn {
+  display: block;
+  margin-top: 7px;
+  padding: 7px 10px;
+  background: rgba(232,93,47,.25);
+  border-radius: 5px;
+  font-family: var(--mono);
+  font-size: .68rem;
+  line-height: 1.6;
+  color: #ffd0bc;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── TIME PREVIEW ── */
+.time-preview {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  background: var(--yellow-light);
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-sm);
+  flex-wrap: wrap;
+}
+
+.time-preview .tp-label {
+  font-size: .72rem;
+  color: var(--yellow);
+  font-family: var(--mono);
+  font-weight: 500;
+}
+
+.time-preview .tp-val {
+  font-size: .8rem;
+  color: var(--text);
+  font-family: var(--mono);
+}
+
+.time-preview .tp-val strong { color: var(--accent); }
+.time-preview .tp-val em { color: var(--green); font-style: normal; font-weight: 600; }
+
+/* ── SLIDER ── */
+.slider-field { grid-column: 1 / -1; }
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+input[type=range] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 5px;
+  border-radius: 99px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid white;
+  box-shadow: 0 0 0 1.5px var(--accent), 0 2px 6px rgba(232,93,47,.3);
+  transition: box-shadow .15s;
+}
+
+input[type=range]:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1.5px var(--accent), 0 0 0 4px rgba(232,93,47,.2);
+}
+
+.slider-val {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--accent);
+  min-width: 58px;
+  text-align: right;
+}
+
+/* ── CLIENT TOGGLE ── */
+.toggle-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.t-btn {
+  flex: 1;
+  min-width: 130px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--sub);
+  text-align: center;
+  transition: all .15s;
+}
+
+.t-btn:hover { border-color: var(--border2); color: var(--text); }
+.t-btn.on-b2c { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+.t-btn.on-b2b { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+
+.b2b-box {
+  display: none;
+  padding: 12px 14px;
+  background: var(--blue-light);
+  border: 1px solid var(--blue-border);
+  border-radius: var(--radius-sm);
+  margin-top: 4px;
+}
+
+.b2b-box.show { display: block; animation: fadeUp .2s ease; }
+
+/* ── QTY ── */
+.qty-area { margin-top: 16px; }
+.qty-label-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.qty-label { font-size: .78rem; font-weight: 500; color: var(--text); }
+.qty-chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.qchip {
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--sub);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all .15s;
+}
+.qchip:hover { border-color: var(--accent-border); color: var(--accent); }
+.qchip.on { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+
+.qty-custom {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: white;
+  padding: 4px 8px;
+  transition: border-color .15s;
+}
+.qty-custom:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,93,47,.1); }
+.qty-custom input {
+  width: 50px;
+  border: none;
+  outline: none;
+  font-family: var(--mono);
+  font-size: .82rem;
+  color: var(--text);
+  background: transparent;
+  -moz-appearance: textfield;
+}
+.qty-custom input::-webkit-outer-spin-button,
+.qty-custom input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.qty-custom span { font-size: .7rem; color: var(--muted); }
+
+/* ── RESULT CARD ── */
+.result-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.result-top-bar {
+  background: var(--accent);
+  height: 4px;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.result-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.3px;
+}
+
+.recalc-btn {
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--accent);
+  background: var(--accent-light);
+  border: 1px solid var(--accent-border);
+  border-radius: 99px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background .15s;
+}
+.recalc-btn:hover { background: #fde0d4; }
+
+/* ── BREAKDOWN ── */
+.breakdown { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
+
+.brow { display: flex; align-items: center; gap: 10px; }
+
+.brow-label {
+  font-size: .75rem;
+  color: var(--sub);
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.brow-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.brow-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+}
+
+.brow-val {
+  font-family: var(--mono);
+  font-size: .76rem;
+  color: var(--text);
+  min-width: 72px;
+  text-align: right;
+  font-weight: 500;
+}
+
+.brow-divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+.brow.total .brow-label { font-weight: 600; color: var(--text); font-size: .8rem; }
+.brow.total .brow-val { font-size: .9rem; color: var(--accent); font-weight: 700; }
+
+/* ── PRICE SECTION ── */
+.price-section {
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.price-main {
+  flex: 1;
+  min-width: 200px;
+  padding: 20px 20px 20px;
+  border-right: 1px solid var(--border);
+}
+
+.price-lbl {
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.price-num {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -1.5px;
+  color: var(--text);
+  line-height: 1.05;
+}
+
+.price-num span { color: var(--accent); }
+
+.price-meta {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profit-line {
+  font-size: .77rem;
+  color: var(--green);
+  font-family: var(--mono);
+  font-weight: 500;
+}
+
+.b2b-section {
+  display: none;
+  margin-top: 6px;
+  padding: 8px 10px;
+  background: var(--blue-light);
+  border: 1px solid var(--blue-border);
+  border-radius: var(--radius-sm);
+}
+.b2b-section.show { display: block; }
+.b2b-section .b2b-lbl { font-size: .65rem; color: var(--blue); font-family: var(--mono); text-transform: uppercase; letter-spacing: 1px; }
+.b2b-section .b2b-num { font-size: 1.2rem; font-weight: 700; color: var(--blue); letter-spacing: -.5px; margin: 2px 0; }
+.b2b-section .b2b-note { font-size: .7rem; color: var(--sub); }
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--sub);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 99px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.copy-btn:hover { border-color: var(--border2); color: var(--text); }
+
+/* ── BULK TABLE ── */
+.bulk-panel {
+  flex: 1;
+  min-width: 180px;
+  padding: 20px;
+}
+
+.bulk-title {
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.bulk-table { width: 100%; border-collapse: collapse; }
+.bulk-table th {
+  font-size: .68rem;
+  color: var(--muted);
+  text-align: left;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+.bulk-table th:not(:first-child) { text-align: right; }
+.bulk-table td {
+  font-family: var(--mono);
+  font-size: .73rem;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--bg);
+  color: var(--sub);
+}
+.bulk-table td:not(:first-child) { text-align: right; }
+.bulk-table td.disc-col { color: var(--green); }
+.bulk-table tr.hl td { color: var(--accent); font-weight: 600; }
+.bulk-table tr.hl td.disc-col { color: var(--green); font-weight: 600; }
+
+@media (max-width: 560px) {
+  .price-main { border-right: none; border-bottom: 1px solid var(--border); }
+  .cat-chips { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">🖨</div>
+      <div class="logo-text">
+        <h1>Preço 3D</h1>
+        <p>Calculadora de precificação · FDM</p>
+      </div>
+    </div>
+    <div class="version">v5.0</div>
+  </div>
+
+  <div class="steps">
+
+    <!-- ── 1. IMPRESSORA ── -->
+    <div class="card open" id="c-printer">
+      <div class="card-header" onclick="toggleCard('c-printer')">
+        <div class="step-num">1</div>
+        <span class="card-icon">🖨</span>
+        <span class="card-title">Sua impressora</span>
+        <span class="card-sub auto-pill" id="printerBadge">Selecione para autopreenchimento</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="card-body" id="printerGrid"></div>
+    </div>
+
+    <!-- ── 2. PRODUTO ── -->
+    <div class="card open" id="c-cat">
+      <div class="card-header" onclick="toggleCard('c-cat')">
+        <div class="step-num">2</div>
+        <span class="card-icon">🎯</span>
+        <span class="card-title">Tipo de produto</span>
+        <span class="card-sub" style="color:var(--muted);font-size:.75rem">Sugestão de margem</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="cat-chips" id="catGrid"></div>
+        <div class="sug-box" id="sugBox">
+          <div class="sug-info">
+            <div class="sug-tag">💡 Margem de mercado</div>
+            <div class="sug-text" id="sugText">—</div>
+            <div class="sug-note" id="sugNote"></div>
+          </div>
+          <div class="sug-btns">
+            <button class="sbtn low" id="btnLow" onclick="applyMargin('low')">↓ Conservador</button>
+            <button class="sbtn mid" id="btnMid" onclick="applyMargin('mid')">◎ Ideal</button>
+            <button class="sbtn high" id="btnHigh" onclick="applyMargin('high')">↑ Premium</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 3. FILAMENTO ── -->
+    <div class="card open" id="c-fil">
+      <div class="card-header" onclick="toggleCard('c-fil')">
+        <div class="step-num">3</div>
+        <span class="card-icon">🧵</span>
+        <span class="card-title">Filamento</span>
+        <span class="card-sub" id="filPreview" style="color:var(--muted);font-size:.75rem">material</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="fgrid">
+          <div class="field">
+            <div class="field-top">
+              <label>Preço do carretel</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup">
+                  <p>Valor pago pelo carretel de <strong>1 kg</strong>.</p>
+                  <span class="tip-ex">PLA básico: R$80–140/kg<br>PETG: R$110–180/kg<br>ABS: R$90–160/kg</span>
+                  <span class="tip-warn">Carretel 500g por R$70 → coloque 140 (×2)</span>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="filPrice" value="120" min="0" step=".01" oninput="calc()">
+              <span class="input-unit">R$/kg</span>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-top">
+              <label>Peso utilizado</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup flip">
+                  <p>Gramas mostradas no slicer (Cura, Bambu Studio…).</p>
+                  <span class="tip-ex">Slicer mostra "12,4g" → digite 12.4</span>
+                  <span class="tip-warn">Acrescente 5–10% para falhas e purga.</span>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="filWeight" value="10" min="0" step=".1" oninput="calc()">
+              <span class="input-unit">g</span>
+            </div>
+            <span class="field-hint">Ver no slicer antes de imprimir</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 4. TEMPO ── -->
+    <div class="card open" id="c-time">
+      <div class="card-header" onclick="toggleCard('c-time')">
+        <div class="step-num">4</div>
+        <span class="card-icon">⏱</span>
+        <span class="card-title">Tempo de impressão</span>
+        <span class="card-sub" id="timePreviewBadge" style="color:var(--muted);font-size:.75rem">duração</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="fgrid">
+          <div class="field">
+            <div class="field-top">
+              <label>Horas</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup">
+                  <p>Parte inteira do tempo mostrado no slicer.</p>
+                  <span class="tip-ex">Slicer: "4h 30min" → coloque 4<br>Slicer: "15min" → coloque 0</span>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="printH" value="1" min="0" step="1" oninput="calc();updTime()">
+              <span class="input-unit">h</span>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-top">
+              <label>Minutos</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup flip">
+                  <p>Parte dos minutos (0–59).</p>
+                  <span class="tip-ex">Slicer: "2h 45min" → coloque 45<br>Slicer: "0h 15min" → coloque 15</span>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="printM" value="30" min="0" max="59" step="1" oninput="calc();updTime()">
+              <span class="input-unit">min</span>
+            </div>
+          </div>
+          <div class="time-preview">
+            <span class="tp-label">📐 Total:</span>
+            <span class="tp-val" id="timeLine">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 5. ENERGIA ── -->
+    <div class="card open" id="c-energy">
+      <div class="card-header" onclick="toggleCard('c-energy')">
+        <div class="step-num">5</div>
+        <span class="card-icon">⚡</span>
+        <span class="card-title">Energia elétrica</span>
+        <span class="auto-pill" id="energyBadge">AUTO</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="fgrid">
+          <div class="field">
+            <div class="field-top">
+              <label>Tarifa de energia</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup">
+                  <p>Valor cobrado por kWh na sua conta de luz.</p>
+                  <span class="tip-ex">RS/SC 2025: ~R$0,75<br>SP: ~R$0,80<br>RJ: ~R$0,90</span>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="energyRate" value=".75" min="0" step=".01" oninput="calc()">
+              <span class="input-unit">R$/kWh</span>
+            </div>
+            <span class="field-hint">Ver na sua conta de luz</span>
+          </div>
+          <div class="field">
+            <div class="field-top">
+              <label>Potência da impressora</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup flip">
+                  <p>Watts médios durante a impressão. Ao selecionar a impressora no passo 1, este campo é preenchido automaticamente.</p>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="printerW" value="125" min="0" step="5" oninput="calc()">
+              <span class="input-unit">W</span>
+            </div>
+            <span class="field-hint">Preenchido pela impressora selecionada</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 6. MÃO DE OBRA ── -->
+    <div class="card open" id="c-labor">
+      <div class="card-header" onclick="toggleCard('c-labor')">
+        <div class="step-num">6</div>
+        <span class="card-icon">🙋</span>
+        <span class="card-title">Mão de obra</span>
+        <span class="card-sub" style="color:var(--muted);font-size:.75rem">seu tempo ativo</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="fgrid">
+          <div class="field">
+            <div class="field-top">
+              <label>Valor da sua hora</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup">
+                  <p>Quanto você quer ganhar por hora de trabalho <strong>ativo</strong>.</p>
+                  <span class="tip-ex">Quer R$1.500/mês, 150h/mês<br>→ R$1.500 ÷ 150 = R$10/h</span>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="laborRate" value="25" min="0" step="1" oninput="calc()">
+              <span class="input-unit">R$/h</span>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-top">
+              <label>Tempo ativo por peça</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup flip">
+                  <p>Minutos que você trabalha ativamente: setup, remoção, acabamento, embalagem.<br><br><strong>Não inclua o tempo que a impressora fica sozinha.</strong></p>
+                  <span class="tip-ex">Preparar arquivo: 5min<br>Iniciar impressão: 3min<br>Remover + limpar: 5min<br>Embalar: 5min<br>→ total: 18min</span>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="laborMin" value="20" min="0" step="1" oninput="calc()">
+              <span class="input-unit">min</span>
+            </div>
+            <span class="field-hint">Setup + remoção + embalagem (não o print)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 7. DEPRECIAÇÃO ── -->
+    <div class="card open" id="c-depr">
+      <div class="card-header" onclick="toggleCard('c-depr')">
+        <div class="step-num">7</div>
+        <span class="card-icon">🔩</span>
+        <span class="card-title">Depreciação da impressora</span>
+        <span class="auto-pill" id="deprBadge">AUTO</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="fgrid">
+          <div class="field">
+            <div class="field-top">
+              <label>Valor da impressora</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup">
+                  <p>Valor pago pela impressora + acessórios essenciais.</p>
+                  <span class="tip-ex">Ender 3 V3 SE: ~R$1.300<br>Bambu A1 Mini: ~R$2.800<br>Bambu P1S: ~R$6.500</span>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="printerCost" value="1300" min="0" step="50" oninput="calc()">
+              <span class="input-unit">R$</span>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-top">
+              <label>Vida útil estimada</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup flip">
+                  <p>Horas de impressão até troca ou reforma grande.</p>
+                  <span class="tip-ex">Ender 3: 1.000–2.000h<br>Bambu A1: 3.000–4.000h<br>Prusa MK4: 5.000–7.000h</span>
+                  <span class="tip-warn">Menor vida útil = custo maior por peça.</span>
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap">
+              <input type="number" id="printerLife" value="1500" min="1" step="100" oninput="calc()">
+              <span class="input-unit">h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 8. MARGEM ── -->
+    <div class="card open" id="c-margin">
+      <div class="card-header" onclick="toggleCard('c-margin')">
+        <div class="step-num">8</div>
+        <span class="card-icon">📈</span>
+        <span class="card-title">Margem de lucro</span>
+        <span class="card-sub" id="marginBadge" style="color:var(--accent);font-size:.8rem;font-family:var(--mono);font-weight:500">400%</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="fgrid">
+          <div class="slider-field">
+            <div class="field-top" style="margin-bottom:8px">
+              <label>Margem sobre o custo total</label>
+              <div class="tip-btn" onclick="toggleTip(this)">?
+                <div class="tip-popup">
+                  <p>Lucro em % sobre o custo total (não sobre o preço final).</p>
+                  <span class="tip-ex">Custo: R$2,00 · Margem 400%<br>→ Lucro: R$8,00<br>→ Preço: R$10,00</span>
+                  <span class="tip-warn">Use o Tipo de produto (passo 2) para sugestões calibradas!</span>
+                </div>
+              </div>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="marginSlider" min="0" max="1500" value="400" step="5" oninput="syncSlider(this.value)">
+              <span class="slider-val" id="sliderVal">400%</span>
+            </div>
+            <div class="input-wrap" style="margin-top:10px;max-width:140px">
+              <input type="number" id="marginInput" value="400" min="0" max="9999" step="1" oninput="syncInput(this.value)">
+              <span class="input-unit">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 9. CLIENTE / QTD ── -->
+    <div class="card open" id="c-client">
+      <div class="card-header" onclick="toggleCard('c-client')">
+        <div class="step-num">9</div>
+        <span class="card-icon">👥</span>
+        <span class="card-title">Venda para quem?</span>
+        <span class="card-sub" style="color:var(--muted);font-size:.75rem">cliente + quantidade</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="toggle-row">
+          <button class="t-btn on-b2c" id="btnB2C" onclick="setClient('b2c')">🛒 Cliente final (B2C)</button>
+          <button class="t-btn" id="btnB2B" onclick="setClient('b2b')">🏢 Empresa (B2B)</button>
+        </div>
+        <div class="b2b-box" id="b2bBox">
+          <div class="fgrid">
+            <div class="field">
+              <div class="field-top"><label>Desconto corporativo</label>
+                <div class="tip-btn" onclick="toggleTip(this)">?
+                  <div class="tip-popup"><p>Desconto sobre seu preço B2C para clientes empresa.<br><br>Típico: 15–30%.</p></div>
+                </div>
+              </div>
+              <div class="input-wrap"><input type="number" id="b2bDisc" value="20" min="0" max="60" step="1" oninput="calc()"><span class="input-unit">%</span></div>
+            </div>
+            <div class="field">
+              <div class="field-top"><label>Pedido mínimo</label></div>
+              <div class="input-wrap"><input type="number" id="b2bMin" value="10" min="1" step="1" oninput="calc()"><span class="input-unit">un</span></div>
+              <span class="field-hint">Qtd. mínima para preço B2B</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="qty-area">
+          <div class="qty-label-row">
+            <span class="qty-label">Quantidade</span>
+          </div>
+          <div class="qty-chips">
+            <button class="qchip on" onclick="setQty(1,this)">1</button>
+            <button class="qchip" onclick="setQty(5,this)">5</button>
+            <button class="qchip" onclick="setQty(10,this)">10</button>
+            <button class="qchip" onclick="setQty(25,this)">25</button>
+            <button class="qchip" onclick="setQty(50,this)">50</button>
+            <div class="qty-custom">
+              <input type="number" id="qtyInput" value="1" min="1" step="1" oninput="setQtyManual(this.value)">
+              <span>un</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /steps -->
+
+  <!-- ══════════════════════════════════════
+       RESULTADO
+  ══════════════════════════════════════ -->
+  <div class="result-card">
+    <div class="result-top-bar"></div>
+    <div class="result-header">
+      <h2>📊 Resultado</h2>
+      <button class="recalc-btn" onclick="calc()">↻ Recalcular</button>
+    </div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="price-section">
+      <div class="price-main">
+        <div class="price-lbl" id="priceLbl">PREÇO B2C — 1 UNIDADE</div>
+        <div class="price-num" id="priceNum"><span>R$</span> —</div>
+        <div class="price-meta">
+          <div class="profit-line" id="profitLine">—</div>
+          <div class="b2b-section" id="b2bResult">
+            <div class="b2b-lbl">Preço B2B</div>
+            <div class="b2b-num" id="b2bNum">R$ —</div>
+            <div class="b2b-note" id="b2bNote">—</div>
+          </div>
+        </div>
+        <button class="copy-btn" onclick="copyPrice()">⎘ Copiar valor</button>
+      </div>
+      <div class="bulk-panel">
+        <div class="bulk-title">Tabela por volume</div>
+        <table class="bulk-table" id="bulkTable"></table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// ══════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════
+const PRINTERS = [
+  { brand:'Creality', models:[
+    { id:'e3v2',   name:'Ender 3 V2',    w:125, cost:1000, life:1500 },
+    { id:'e3v3se', name:'Ender 3 V3 SE', w:120, cost:1300, life:2000 },
+    { id:'e3v3',   name:'Ender 3 V3',    w:150, cost:1800, life:2500 },
+    { id:'k1',     name:'K1 / K1C',      w:175, cost:2500, life:3000 },
+    { id:'k1max',  name:'K1 Max',        w:220, cost:3200, life:3000 },
+  ]},
+  { brand:'Bambu Lab', models:[
+    { id:'a1mini', name:'A1 Mini',   w:95,  cost:2800, life:3500 },
+    { id:'a1',     name:'A1',        w:150, cost:3600, life:3500 },
+    { id:'p1p',    name:'P1P',       w:120, cost:4800, life:5000 },
+    { id:'p1s',    name:'P1S',       w:120, cost:6500, life:6000 },
+    { id:'x1c',    name:'X1 Carbon', w:120, cost:9500, life:7000 },
+  ]},
+  { brand:'Prusa', models:[
+    { id:'mk3s',  name:'MK3S+', w:100, cost:4500, life:5000 },
+    { id:'mk4',   name:'MK4',   w:120, cost:5800, life:6000 },
+    { id:'mini',  name:'Mini+', w:80,  cost:3200, life:4000 },
+  ]},
+  { brand:'Anycubic', models:[
+    { id:'kobra2',  name:'Kobra 2',     w:150, cost:1100, life:2000 },
+    { id:'kobra2p', name:'Kobra 2 Pro', w:160, cost:1500, life:2500 },
+  ]},
+  { brand:'Manual', models:[
+    { id:'custom', name:'Outra (manual)', w:null, cost:null, life:null },
+  ]},
+];
+
+const CATS = [
+  { id:'keychain',  emoji:'🔑', name:'Chaveiro',           range:[250,400,600],  why:'Baixo custo, alto valor percebido. Presentes aguentam boa margem.', ex:'Ex: custa R$1–2, vende R$6–15', note:'Referência real: vendedores Elo7 e feiras.' },
+  { id:'acessorio', emoji:'🧉', name:'Enfeite / Acessório', range:[400,700,1000], why:'Personalização eleva muito o valor percebido.', ex:'Ex: enfeite chimarrão, tags, coasters', note:'Margem real de 600–1000% em itens personalizados.' },
+  { id:'miniature', emoji:'🐉', name:'Miniatura / Figura',  range:[250,450,750],  why:'Nicho = menos concorrência de preço.', ex:'Ex: RPG, colecionáveis, animais' },
+  { id:'deco',      emoji:'🏠', name:'Decoração',           range:[120,250,450],  why:'Design diferenciado sustenta margem maior.', ex:'Ex: vasos, porta-objetos, quadros' },
+  { id:'func',      emoji:'🔧', name:'Peça Funcional',      range:[50,100,200],   why:'Comprador pesquisa preço. Volume compensa.', ex:'Ex: suportes, tampas, adaptadores' },
+  { id:'enc',       emoji:'✏️', name:'Sob Encomenda',       range:[500,900,1500], why:'Exclusividade = máxima margem. Inclua o design!', ex:'Ex: presentes únicos, protótipos' },
+  { id:'toy',       emoji:'🧸', name:'Infantil',            range:[150,280,500],  why:'Pais pagam por segurança e exclusividade.', ex:'Ex: brinquedos, peças lúdicas' },
+  { id:'corp',      emoji:'💼', name:'Brinde Corporativo',  range:[80,160,300],   why:'Volume alto compensa margem menor.', ex:'Ex: logotipos, plaquinhas, kits' },
+];
+
+const TIERS = [
+  { label:'1 un.',     qty:1,  disc:0  },
+  { label:'2–4 un.',   qty:3,  disc:5  },
+  { label:'5–9 un.',   qty:7,  disc:10 },
+  { label:'10–24 un.', qty:15, disc:15 },
+  { label:'25–49 un.', qty:30, disc:20 },
+  { label:'50+ un.',   qty:60, disc:25 },
+];
+
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let activePrinter = null;
+let activeCat     = null;
+let clientType    = 'b2c';
+let currentQty    = 1;
+let lastB2cUnit   = 0;
+
+// ══════════════════════════════════════════════════════
+// BUILD
+// ══════════════════════════════════════════════════════
+function buildPrinters() {
+  document.getElementById('printerGrid').innerHTML = PRINTERS.map(b => `
+    <div class="brand-block">
+      <div class="brand-name">${b.brand}</div>
+      <div class="printer-chips">
+        ${b.models.map(m => `
+          <div class="pchip" id="pc-${m.id}" onclick="selectPrinter('${m.id}')">
+            <div class="pchip-name">${m.name}</div>
+            <div class="pchip-info">${m.w ? `${m.w}W · ${m.life.toLocaleString('pt-BR')}h` : 'preencher manual'}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('') + `<div class="autofill-bar" id="afBar">
+    <div class="af-item"><div class="af-label">Potência</div><div class="af-value" id="afW">—</div></div>
+    <div class="af-item"><div class="af-label">Vida útil</div><div class="af-value" id="afL">—</div></div>
+    <div class="af-item"><div class="af-label">Custo ref.</div><div class="af-value" id="afC">—</div></div>
+    <div class="af-note">Aplicado automaticamente · <button class="af-edit" onclick="unlockFields()">editar</button></div>
+  </div>`;
+}
+
+function buildCats() {
+  document.getElementById('catGrid').innerHTML = CATS.map(c => `
+    <div class="cchip" id="cc-${c.id}" onclick="selectCat('${c.id}')">
+      <span class="cchip-emoji">${c.emoji}</span>
+      <div class="cchip-name">${c.name}</div>
+      <div class="cchip-range">${c.range[0]}% – ${c.range[2]}%</div>
+      <div class="cchip-ex">${c.ex}</div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// PRINTER
+// ══════════════════════════════════════════════════════
+function selectPrinter(id) {
+  activePrinter = id;
+  document.querySelectorAll('.pchip').forEach(c => c.classList.remove('active'));
+  document.getElementById('pc-' + id).classList.add('active');
+
+  const m = PRINTERS.flatMap(b => b.models).find(x => x.id === id);
+
+  if (!m.w) { unlockFields(); document.getElementById('afBar').classList.remove('show'); return; }
+
+  document.getElementById('printerW').value    = m.w;
+  document.getElementById('printerCost').value = m.cost;
+  document.getElementById('printerLife').value  = m.life;
+
+  ['printerW','printerCost','printerLife'].forEach(f => {
+    const el = document.getElementById(f);
+    el.readOnly = true;
+    el.classList.add('auto-val');
+  });
+
+  document.getElementById('afW').textContent = m.w + ' W médios';
+  document.getElementById('afL').textContent = m.life.toLocaleString('pt-BR') + ' horas';
+  document.getElementById('afC').textContent = 'R$ ' + m.cost.toLocaleString('pt-BR');
+  document.getElementById('afBar').classList.add('show');
+  document.getElementById('printerBadge').textContent = m.name + ' selecionada';
+
+  calc();
+}
+
+function unlockFields() {
+  ['printerW','printerCost','printerLife'].forEach(f => {
+    const el = document.getElementById(f);
+    el.readOnly = false;
+    el.classList.remove('auto-val');
+  });
+  document.getElementById('energyBadge').style.display = 'none';
+  document.getElementById('deprBadge').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════════
+// CATEGORY
+// ══════════════════════════════════════════════════════
+function selectCat(id) {
+  if (activeCat === id) {
+    activeCat = null;
+    document.querySelectorAll('.cchip').forEach(c => c.classList.remove('active'));
+    document.getElementById('sugBox').classList.remove('show');
+    return;
+  }
+  activeCat = id;
+  document.querySelectorAll('.cchip').forEach(c => c.classList.remove('active'));
+  document.getElementById('cc-' + id).classList.add('active');
+
+  const c = CATS.find(x => x.id === id);
+  document.getElementById('sugText').innerHTML = `<strong>${c.emoji} ${c.name}</strong> — ${c.why}`;
+  document.getElementById('sugNote').textContent = c.note || c.ex;
+  document.getElementById('btnLow').textContent  = `↓ ${c.range[0]}%`;
+  document.getElementById('btnMid').textContent  = `◎ ${c.range[1]}%`;
+  document.getElementById('btnHigh').textContent = `↑ ${c.range[2]}%`;
+  document.getElementById('sugBox').classList.add('show');
+}
+
+function applyMargin(level) {
+  if (!activeCat) return;
+  const c = CATS.find(x => x.id === activeCat);
+  const val = { low:c.range[0], mid:c.range[1], high:c.range[2] }[level];
+  setMargin(val);
+  calc();
+  document.querySelector('.result-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// ══════════════════════════════════════════════════════
+// CLIENT / QTY
+// ══════════════════════════════════════════════════════
+function setClient(t) {
+  clientType = t;
+  document.getElementById('btnB2C').className = 't-btn ' + (t==='b2c' ? 'on-b2c' : '');
+  document.getElementById('btnB2B').className = 't-btn ' + (t==='b2b' ? 'on-b2b' : '');
+  document.getElementById('b2bBox').classList.toggle('show', t==='b2b');
+  calc();
+}
+
+function setQty(q, btn) {
+  currentQty = q;
+  document.getElementById('qtyInput').value = q;
+  document.querySelectorAll('.qchip').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  calc();
+}
+
+function setQtyManual(v) {
+  currentQty = Math.max(1, parseInt(v) || 1);
+  document.querySelectorAll('.qchip').forEach(b => b.classList.remove('on'));
+  calc();
+}
+
+// ══════════════════════════════════════════════════════
+// MARGIN
+// ══════════════════════════════════════════════════════
+function syncSlider(v) {
+  document.getElementById('marginInput').value = v;
+  document.getElementById('sliderVal').textContent = v + '%';
+  document.getElementById('marginBadge').textContent = v + '%';
+  calc();
+}
+function syncInput(v) {
+  const val = Math.min(9999, Math.max(0, parseFloat(v) || 0));
+  document.getElementById('marginSlider').value = Math.min(1500, val);
+  document.getElementById('sliderVal').textContent = val + '%';
+  document.getElementById('marginBadge').textContent = val + '%';
+  calc();
+}
+function setMargin(v) {
+  document.getElementById('marginInput').value = v;
+  document.getElementById('marginSlider').value = Math.min(1500, v);
+  document.getElementById('sliderVal').textContent = v + '%';
+  document.getElementById('marginBadge').textContent = v + '%';
+}
+
+// ══════════════════════════════════════════════════════
+// TIME PREVIEW
+// ══════════════════════════════════════════════════════
+function updTime() {
+  const h = parseFloat(document.getElementById('printH').value) || 0;
+  const m = parseFloat(document.getElementById('printM').value) || 0;
+  const total = h + m / 60;
+  const parts = [];
+  if (h > 0) parts.push(`<strong>${h}h</strong>`);
+  if (m > 0) parts.push(`<strong>${m}min</strong>`);
+  if (!parts.length) parts.push(`<strong>0h</strong>`);
+  document.getElementById('timeLine').innerHTML =
+    parts.join(' + ') + ` = <em>${total.toFixed(2).replace('.',',')} horas</em> para energia e depreciação`;
+  document.getElementById('timePreviewBadge').textContent = total.toFixed(2).replace('.',',') + 'h';
+}
+
+// ══════════════════════════════════════════════════════
+// PANEL TOGGLE
+// ══════════════════════════════════════════════════════
+function toggleCard(id) { document.getElementById(id).classList.toggle('open'); }
+
+// ══════════════════════════════════════════════════════
+// TOOLTIP
+// ══════════════════════════════════════════════════════
+function toggleTip(el) {
+  const open = el.classList.contains('open');
+  document.querySelectorAll('.tip-btn.open').forEach(t => t.classList.remove('open'));
+  if (!open) el.classList.add('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.tip-btn')) document.querySelectorAll('.tip-btn.open').forEach(t => t.classList.remove('open'));
+});
+
+// ══════════════════════════════════════════════════════
+// FORMAT
+// ══════════════════════════════════════════════════════
+function fmtR(v) { return 'R$\u00a0' + v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
+
+// ══════════════════════════════════════════════════════
+// CALC
+// ══════════════════════════════════════════════════════
+function calc() {
+  const fp  = parseFloat(document.getElementById('filPrice').value)   || 0;
+  const fw  = parseFloat(document.getElementById('filWeight').value)  || 0;
+  const ph  = parseFloat(document.getElementById('printH').value)     || 0;
+  const pm  = parseFloat(document.getElementById('printM').value)     || 0;
+  const er  = parseFloat(document.getElementById('energyRate').value) || 0;
+  const pw  = parseFloat(document.getElementById('printerW').value)   || 0;
+  const lr  = parseFloat(document.getElementById('laborRate').value)  || 0;
+  const lmin= parseFloat(document.getElementById('laborMin').value)   || 0;  // ← minutos agora
+  const pc  = parseFloat(document.getElementById('printerCost').value)|| 0;
+  const pl  = parseFloat(document.getElementById('printerLife').value)|| 1;
+  const mg  = parseFloat(document.getElementById('marginInput').value)|| 0;
+
+  const totalH   = ph + pm / 60;
+  const laborH   = lmin / 60;                      // converte min → h internamente
+  const filCost  = (fp / 1000) * fw;
+  const eneCost  = (pw / 1000) * totalH * er;
+  const depCost  = (pc / pl) * totalH;
+  const labCost  = lr * laborH;
+  const total    = filCost + eneCost + depCost + labCost;
+  const profit   = total * (mg / 100);
+  const unitB2C  = total + profit;
+  lastB2cUnit    = unitB2C;
+
+  // Bulk discount for current qty
+  let discPct = 0;
+  for (const t of TIERS) { if (currentQty >= t.qty) discPct = t.disc; }
+  const unitDisc = unitB2C * (1 - discPct / 100);
+  const display  = currentQty > 1 ? unitDisc * currentQty : unitDisc;
+
+  // ── Breakdown ───────────────────────────────────────
+  const items = [
+    { l:'🧵 Filamento',       v:filCost, color:'#e85d2f' },
+    { l:'⚡ Energia elétrica', v:eneCost, color:'#d97706' },
+    { l:'🔩 Depreciação',      v:depCost, color:'#7c3aed' },
+    { l:'🙋 Mão de obra',      v:labCost, color:'#e11d48' },
+  ];
+  const maxV = Math.max(...items.map(i=>i.v), profit*.3, .001);
+
+  document.getElementById('breakdown').innerHTML =
+    items.map(i => `
+      <div class="brow">
+        <span class="brow-label">${i.l}</span>
+        <div class="brow-bar"><div class="brow-fill" style="width:${Math.min(100,i.v/maxV*100)}%;background:${i.color}"></div></div>
+        <span class="brow-val">${fmtR(i.v)}</span>
+      </div>`).join('') + `
+    <div class="brow">
+      <span class="brow-label">📈 Lucro (${mg}%)</span>
+      <div class="brow-bar"><div class="brow-fill" style="width:${Math.min(100,profit/maxV*100)}%;background:#16a34a"></div></div>
+      <span class="brow-val" style="color:var(--green)">${fmtR(profit)}</span>
+    </div>
+    <hr class="brow-divider">
+    <div class="brow total">
+      <span class="brow-label">Custo total (sem lucro)</span>
+      <div class="brow-bar"></div>
+      <span class="brow-val">${fmtR(total)}</span>
+    </div>`;
+
+  // ── Price label ─────────────────────────────────────
+  const discTxt = discPct > 0 ? ` · ${discPct}% de desconto` : '';
+  const qtyTxt  = currentQty > 1 ? ` — ${currentQty} un.` : ' — 1 unidade';
+  document.getElementById('priceLbl').textContent = `PREÇO B2C${qtyTxt}${discTxt}`;
+
+  document.getElementById('priceNum').innerHTML =
+    `<span>R$</span>\u00a0${display.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.')}`;
+
+  const unitProfit = unitDisc - total;
+  document.getElementById('profitLine').textContent = currentQty > 1
+    ? `Lucro total: ${fmtR(unitProfit * currentQty)} · por un.: ${fmtR(unitProfit)}`
+    : `Lucro: ${fmtR(profit)} · Custo: ${fmtR(total)}`;
+
+  // ── B2B ─────────────────────────────────────────────
+  const b2bD  = parseFloat(document.getElementById('b2bDisc').value) || 0;
+  const b2bMn = parseInt(document.getElementById('b2bMin').value) || 1;
+  const b2bU  = unitB2C * (1 - b2bD / 100);
+  const b2bEl = document.getElementById('b2bResult');
+
+  if (clientType === 'b2b') {
+    b2bEl.classList.add('show');
+    document.getElementById('b2bNum').textContent  = fmtR(b2bU);
+    document.getElementById('b2bNote').textContent =
+      `Total em ${b2bMn} un.: ${fmtR(b2bU*b2bMn)} · Lucro/un.: ${fmtR(b2bU-total)}`;
+  } else {
+    b2bEl.classList.remove('show');
+  }
+
+  // ── Bulk table ───────────────────────────────────────
+  document.getElementById('bulkTable').innerHTML = `
+    <thead><tr><th>Qtd.</th><th>Desc.</th><th>Preço/un.</th></tr></thead>
+    <tbody>
+      ${TIERS.map(t => {
+        const u = unitB2C * (1 - t.disc/100);
+        const isActive = currentQty >= t.qty && (
+          TIERS.indexOf(t) === TIERS.length-1 ||
+          currentQty < TIERS[TIERS.indexOf(t)+1].qty
+        );
+        return `<tr class="${isActive?'hl':''}">
+          <td>${t.label}</td>
+          <td class="disc-col">${t.disc?'-'+t.disc+'%':'—'}</td>
+          <td>${fmtR(u)}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>`;
+
+  // update filament preview
+  document.getElementById('filPreview').textContent = `${fmtR(filCost)} de filamento`;
+}
+
+function copyPrice() {
+  const txt = document.getElementById('priceNum').textContent.trim();
+  navigator.clipboard.writeText(txt).catch(()=>{});
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent = '✓ Copiado!';
+  setTimeout(() => btn.textContent = '⎘ Copiar valor', 1800);
+}
+
+// ── INIT
+buildPrinters();
+buildCats();
+updTime();
+calc();
+</script>
+</body>
+</html>
