@@ -1635,9 +1635,78 @@ function copyPrice() {
   setTimeout(() => btn.textContent = '⎘ Copiar valor', 1800);
 }
 
+// ══════════════════════════════════════════════════════
+// LOCALSTORAGE — salvar e restaurar configurações
+// ══════════════════════════════════════════════════════
+const SAVE_FIELDS = ['filPrice','filWeight','printH','printM','energyRate','printerW','laborRate','laborMin','printerCost','printerLife','marginInput','b2bDisc','b2bMin'];
+
+function saveSettings() {
+  const data = {};
+  SAVE_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  data.clientType  = clientType;
+  data.currentQty  = currentQty;
+  data.activePrinter = activePrinter;
+  data.activeCat   = activeCat;
+  localStorage.setItem('preco3d_v5', JSON.stringify(data));
+}
+
+function loadSettings() {
+  const raw = localStorage.getItem('preco3d_v5');
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    SAVE_FIELDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && data[id] !== undefined) el.value = data[id];
+    });
+    if (data.clientType && data.clientType !== 'b2c') setClient(data.clientType);
+    if (data.currentQty) {
+      currentQty = parseInt(data.currentQty);
+      document.getElementById('qtyInput').value = currentQty;
+    }
+    if (data.activePrinter) {
+      // rebuild ocorreu antes, então podemos selecionar
+      setTimeout(() => {
+        selectPrinter(data.activePrinter);
+      }, 50);
+    }
+    if (data.activeCat) {
+      setTimeout(() => selectCat(data.activeCat), 60);
+    }
+    // Sincroniza slider e badge da margem
+    const mg = document.getElementById('marginInput').value;
+    document.getElementById('marginSlider').value = Math.min(1500, mg);
+    document.getElementById('sliderVal').textContent = mg + '%';
+    document.getElementById('marginBadge').textContent = mg + '%';
+
+    // mostra toast
+    showToast('✓ Configurações restauradas');
+  } catch(e) {}
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1917;color:#fff;font-family:var(--mono);font-size:.75rem;padding:9px 18px;border-radius:99px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);opacity:0;transition:opacity .25s';
+  document.body.appendChild(t);
+  requestAnimationFrame(() => { t.style.opacity = '1'; });
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2200);
+}
+
+// Intercepta calc() para salvar após cada mudança
+const _origCalc = calc;
+window.calc = function() {
+  _origCalc();
+  saveSettings();
+};
+
 // ── INIT
 buildPrinters();
 buildCats();
+loadSettings();
 updTime();
 calc();
 </script>
